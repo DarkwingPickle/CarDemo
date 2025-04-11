@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://duy0dbkychify"]
+[gd_scene load_steps=6 format=3 uid="uid://duy0dbkychify"]
 
 [ext_resource type="Script" path="res://Scripts/BaseCar.gd" id="1_iqrfq"]
 [ext_resource type="PackedScene" uid="uid://8sl5gmdd6o6w" path="res://assets/camera/camera_3d.tscn" id="2_5wm5h"]
+[ext_resource type="AudioStream" uid="uid://be4ts1p2re6en" path="res://Sounds/pluspoint.wav" id="3_6d45e"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mm2gk"]
 size = Vector3(1.9717, 1, 2.08592)
@@ -92,3 +93,6 @@ text = "Arow keys to drive
 Space to drift and break
 "
 label_settings = SubResource("LabelSettings_yc8e5")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_6d45e")

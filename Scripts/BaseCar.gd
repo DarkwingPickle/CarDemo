@@ -1,17 +1,14 @@
 extends VehicleBody3D
 class_name BaseCar
 
-signal car_reset
-
-
 @onready var feedback_label = $UI/FeedbackLabel  # Reference to feedback message
 @onready var siren_sound = %SirenSound           # Reference to siren sound
+@onready var pluspoint = %pluspoint
+@onready var minuspoint = %minuspoint
 @onready var end_popup = $UI/EndPopup            # End pop-up UI
 @onready var end_message = $UI/EndPopup/Message  # Pop-up text
 @onready var close_button = $UI/EndPopup/CloseButton  # Close button
 @onready var score_label = %Hud/ScoreLabel    # On-screen score display
-@onready var speed_zone = get_tree().get_nodes_in_group("SpeedZones").front()  # Assuming one speed zone
-
 
 @export var STEER_SPEED = 1.5
 @export var STEER_LIMIT = 0.6
@@ -41,6 +38,18 @@ func _ready():
 		print("SirenSound found!")
 	else:
 		print("Error: SirenSound not found!")
+		
+	if has_node("pluspoint"):
+		pluspoint = get_node("pluspoint")
+		print("pluspoint found!")
+	else:
+		print("Error: pluspoint not found!")
+	
+	if has_node("minuspoint"):
+		minuspoint = get_node("minuspoint")
+		print("minuspoint found!")
+	else:
+		print("Error: minuspoint not found!")
 
 func _physics_process(delta):
 	speed = linear_velocity.length()*Engine.get_frames_per_second()*delta
@@ -104,19 +113,19 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 	var message = ""
 
 	if body.is_in_group("Buildings"):
-		message = "Crashed into a building! Watch your surroundings."
+		get_tree().change_scene_to_file("res://Scenes/bad_buildings_and_trees.tscn")
 		reset_score()
 		
 	elif body.is_in_group("Trees"):
-		message = "Watch out for Trees! Always scan the road ahead."
+		get_tree().change_scene_to_file("res://Scenes/bad_buildings_and_trees.tscn")
 		reset_score()
 		
 	elif body.is_in_group("StopSigns"):
-		message = "You crashed into a stop sign! Always obey traffic signals." 
+		get_tree().change_scene_to_file("res://Scenes/bad_stop.tscn")  # Load the "Bad Stop" scene 
 		reset_score()
 		
 	elif body.is_in_group("OncomingLane"):
-		message = "Stay in your lane! Avoid oncoming traffic."
+		get_tree().change_scene_to_file("res://Scenes/bad_oncoming_traffic.tscn")
 		reset_score()
 		
 	elif body.is_in_group("EndBarrier"):
@@ -138,10 +147,6 @@ func reset_car():
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 
-	# Regenerate speed limit
-	#speed_zone.randomize_speed_limit()
-	car_reset.emit()
-
 func display_feedback(message: String):
 	feedback_label.text = message  # Set the message text
 	feedback_label.visible = true  # Show the message
@@ -152,23 +157,24 @@ func display_feedback(message: String):
 	reset_car()  # Reset the car after the delay
 
 func apply_stop_sign_penalty():
-	display_feedback("You ran a stop sign! Always stop completely.")
+	get_tree().change_scene_to_file("res://Scenes/bad_stop.tscn")  # Load the "Bad Stop" scene
 	reset_score()
 
 func successfully_stopped_at_stop_sign():
 	score += 15  # Award points
 	update_score_display()
+	pluspoint.play()
 	
 func apply_speeding_penalty():
 	feedback_label.text = "Slow down! Watch your speed!"  # Set the message text
 	feedback_label.visible = true
 	score -= 5
 	update_score_display()
+	minuspoint.play()
 	
-
 func successfully_maintained_speed():
 	feedback_label.visible = false
-
+	
 func reset_score():
 	score = 0
 	update_score_display()
@@ -201,7 +207,6 @@ func close_end_popup():
 	reset_car()  # Reset the car position
 
 func _on_oncoming_lane_entered(body: Node3D):
-	print("🚨 Car entered the oncoming lane:", body.name)
-	display_feedback("Stay in your lane! Avoid oncoming traffic.")
+	get_tree().change_scene_to_file("res://Scenes/bad_oncoming_traffic.tscn")
 	reset_score()
 	

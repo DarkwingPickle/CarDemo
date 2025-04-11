@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://c2kqwsup24kcx"]
+[gd_scene load_steps=11 format=3 uid="uid://c2kqwsup24kcx"]
 
 [ext_resource type="Script" path="res://Scripts/BaseCar.gd" id="1_fkpbr"]
 [ext_resource type="PackedScene" uid="uid://benmjny2guowm" path="res://assets/Models/Car/Wheel.glb" id="2_sgux3"]
 [ext_resource type="PackedScene" uid="uid://8sl5gmdd6o6w" path="res://assets/camera/camera_3d.tscn" id="3_km5h1"]
 [ext_resource type="PackedScene" uid="uid://4y2ttyf5fj5s" path="res://assets/Models/Car/car_colored.fbx" id="4_0ix4a"]
 [ext_resource type="AudioStream" uid="uid://605rpehsob6s" path="res://assets/Models/Police Siren (Fast) - Sound Effect (HD).mp3" id="5_vwwee"]
+[ext_resource type="AudioStream" uid="uid://be4ts1p2re6en" path="res://Sounds/pluspoint.wav" id="6_abliv"]
+[ext_resource type="AudioStream" uid="uid://bltx6uxkuti8m" path="res://Sounds/minuspoint.wav" id="7_spcq5"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_aniw4"]
 
@@ -190,6 +192,12 @@ text = "X"
 
 [node name="SirenSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_vwwee")
+
+[node name="pluspoint" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_abliv")
+
+[node name="minuspoint" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_spcq5")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
